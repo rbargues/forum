@@ -86,7 +86,7 @@ app.post("/login", (req, res) => {
       return next(err);
     }
     let results = sqlres.rows;
-    if (results.length === 0) return res.status(418).send({"message":"this is invalid"});
+    if (results.length === 0) return res.status(418).json({"message":"this is invalid"});
     let dbPassword = results[0].password;
     bcrypt.compare(password, dbPassword, (err, bool) => {
       if (bool) {
@@ -97,10 +97,10 @@ app.post("/login", (req, res) => {
         res.cookie("username", usernameJWT, {maxAge: 43200000, httpOnly: true}
         );
         // res.set({"authorization": token});
-        return res.status(200).send({"message": "you can log in"});
+        return res.status(200).json({"message": "you can log in"});
       }
       else {
-        return res.status(418).send("this is wrong username/password");
+        return res.status(418).json({"message":"this is wrong username/password"});
       }
     })
   })
@@ -109,7 +109,7 @@ app.post("/login", (req, res) => {
 app.post("/makethread", (req, res) => {
   let token = jwt.verify(req.cookies.authorization, secret, {algorithm: "HS256"});
   if (!token.authorized) {
-    return res.status(418).send("you need to be logged in to make a thread");
+    return res.status(418).json({"message":"you need to be logged in to make a thread"});
   }
   pool.query(`
   INSERT INTO public.threads (start_time, thread_title)
@@ -118,14 +118,14 @@ app.post("/makethread", (req, res) => {
     if (err) {
       return next(err);
     }
-    return res.status(200).send({"message":"made a thread"});
+    return res.status(200).json({"message":"made a thread"});
   })
 })
 
 app.post("/makepost", (req, res) => {
   let token = jwt.verify(req.cookies.authorization, secret, {algorithm: "HS256"});
   if (!token.authorized) {
-    return res.status(418).send("you need to be logged in to make a post");
+    return res.status(418).json({"message":"you need to be logged in to make a post"});
   }
   const {thread_id, username, post_body} = req.body;
   console.log(username);
@@ -153,7 +153,7 @@ app.post("/makepost", (req, res) => {
         if (err) {
           return next(err);
         }
-        return res.status(200).send({"message":"made a post"});
+        return res.status(200).json({"message":"made a post"});
       });
     });
   });
@@ -171,7 +171,7 @@ app.get("/getthread/:thread_id", (req, res) => {
     if (err) {
       return next(err);
     }
-    return res.status(200).send(sqlres.rows);
+    return res.status(200).json(sqlres.rows);
   })
 })
 
@@ -188,13 +188,13 @@ app.get("/getallthreads", (req, res) => {
     if (err) {
       return next(err);
     }
-    return res.status(200).send(sqlres.rows);
+    return res.status(200).json(sqlres.rows);
   })
 })
 
 app.use((err, req, res, next) => {
   console.log(err);
-  return res.status(418).send(err);
+  return res.status(418).json(err);
 })
 
 app.listen(process.env.PORT,() => console.log(`server is listening on port ${process.env.PORT}`));
