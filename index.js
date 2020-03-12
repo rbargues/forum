@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require('cookie-parser')
 const port = 3000;
 const secret = process.env.SECRET;//fs.readFileSync(path.resolve(__dirname, "./secret.txt"),"UTF-8");
-dbURI = process.env.URI;
+const dbURI = process.env.URI;
 const pool = new Pool({
   connectionString: dbURI
 });
