@@ -1,0 +1,43 @@
+Database schema
+Tables
+  users
+    username
+    password
+  threads
+    time started
+    made of posts
+  posts
+    users
+    text fields
+    date posted
+Queries
+  users 
+    CREATE TABLE public.users (
+      user_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      username VARCHAR NOT NULL,
+      password VARCHAR NOT NULL
+    );
+  threads 
+    CREATE TABLE public.threads (
+      thread_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      start_time TIMESTAMP NOT NULL,
+    );
+  posts
+    CREATE TABLE public.posts (
+      post_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      user_id INT REFERENCES public.users (user_id),
+      thread_id INT REFERENCES public.threads (thread_id),
+      post_time TIMESTAMP NOT NULL,
+      post_body VARCHAR NOT NULL
+    );
+
+API endpoints
+(*)  Sign Up
+    makes a record in users table 
+(*)  Log in
+    uses authentication/authorization
+  Make thread
+    creates record in thread table
+  Make post
+    creates post in post table, must reference user who posted and thread posted to
+  
