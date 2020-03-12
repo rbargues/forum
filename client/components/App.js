@@ -104,6 +104,7 @@ class App extends Component {
   login() {
     let username = document.getElementById("username").value;
     let password = document.getElementById("password").value;
+    console.log(JSON.stringify({username: username, password: password}))
     document.getElementById("password").value = "";
     fetch("/login", {
       method: "POST",
